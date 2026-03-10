@@ -1,0 +1,38 @@
+.column {
+  background-color: var(--bg-column);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  min-width: 280px;
+  max-width: 280px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px 12px 8px;
+}
+
+.column-header h3 {
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: #8B949E;
+}
+
+.task-count {
+  background: #ebecf0;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #42526e;
+}
+
+.task-list {
+  overflow-y: auto;
+  flex-grow: 1;
+  min-height: 50px;
+}
