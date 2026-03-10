@@ -41,7 +41,7 @@ const Board = () => {
   return (
     <main className="board-wrapper">
       <header className="board-header">
-        <h2>Tablero Kanban - Santi OS</h2>
+        <h2>Tablero Kanban Personal</h2>
       </header>
       
       <div className="board">
