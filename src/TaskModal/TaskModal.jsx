@@ -11,14 +11,17 @@ const TaskModal = ({ task, onClose }) => {
   const [priority, setPriority] = useState(task.priority);
 
   const handleUpdate = async () => {
-    const taskRef = doc(db, "task", task.id);
-    await updateDoc(taskRef, {
-      title,
-      description,
-      status,
-      priority
-    });
-    onClose();
+    try {
+      const taskRef = doc(db, "task", task.id);
+      await updateDoc(taskRef, {
+        title,
+        description,
+        status,
+        priority
+      });
+    } catch (error) {
+      console.error("Error al actualizar:", error);
+    }
   };
 
   const handleDelete = async () => {
@@ -32,7 +35,10 @@ const TaskModal = ({ task, onClose }) => {
     <div className="task-modal-overlay" onClick={onClose}>
       <div className="task-modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="task-modal-header">
-          <span className="task-id-tag">SC-{task.id.slice(0,3).toUpperCase()}</span>
+          <span className="task-id-tag">
+            {task.customId ? task.customId : (task.id?.slice(0, 3).toUpperCase() || '---')}
+          </span>
+          
           <div className="task-modal-actions">
             <button className="btn-icon-delete" onClick={handleDelete} title="Eliminar tarea">
               <Trash2 size={18} />
@@ -69,7 +75,7 @@ const TaskModal = ({ task, onClose }) => {
           <div className="task-side-column">
             <div className="side-group">
               <label>ESTADO</label>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} onBlur={handleUpdate}>
+              <select value={status} onChange={(e) => { setStatus(e.target.value); handleUpdate(); }}>
                 <option value="todo">Tareas por hacer</option>
                 <option value="in-progress">En curso</option>
                 <option value="paused">En pausa</option>
@@ -80,7 +86,7 @@ const TaskModal = ({ task, onClose }) => {
 
             <div className="side-group">
               <label>PRIORIDAD</label>
-              <select value={priority} onChange={(e) => setPriority(e.target.value)} onBlur={handleUpdate}>
+              <select value={priority} onChange={(e) => { setPriority(e.target.value); handleUpdate(); }}>
                 <option value="high">Alta</option>
                 <option value="medium">Media</option>
                 <option value="low">Baja</option>
@@ -89,7 +95,7 @@ const TaskModal = ({ task, onClose }) => {
 
             <div className="task-metadata">
               <div className="meta-item">
-                <Clock size={14} /> <span>Creado: {task.createdAt?.toDate().toLocaleDateString()}</span>
+                <Clock size={14} /> <span>Creado: {task.createdAt?.toDate ? task.createdAt.toDate().toLocaleDateString() : 'Fecha no disponible'}</span>
               </div>
             </div>
           </div>

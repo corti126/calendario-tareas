@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Save, AlertOctagon, PlusCircle } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, runTransaction } from 'firebase/firestore';
 import { db } from '../firebase';
 import './CreateTaskModal.css';
 
@@ -8,19 +8,42 @@ const CreateTaskModal = ({ onClose }) => {
   const [title, setTitle] = useState('');
   const [status, setStatus] = useState('todo');
   const [priority, setPriority] = useState('medium');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const counterRef = doc(db, "metadata", "taskCounter");
+
     try {
-      await addDoc(collection(db, "task"), {
-        title,
-        status,
-        priority,
-        createdAt: serverTimestamp()
+      await runTransaction(db, async (transaction) => {
+        const counterDoc = await transaction.get(counterRef);
+        
+        if (!counterDoc.exists()) {
+          throw new Error("El documento contador 'metadata/taskCounter' no existe.");
+        }
+
+        const nextValue = counterDoc.data().currentValue + 1;
+        const customId = `TKP-${nextValue.toString().padStart(2, '0')}`;
+
+        const taskCollectionRef = collection(db, "task");
+        await addDoc(taskCollectionRef, {
+          title,
+          status,
+          priority,
+          customId,
+          startDate: startDate ? new Date(startDate) : null,
+          endDate: endDate ? new Date(endDate) : null,
+          createdAt: serverTimestamp(),
+          orderIndex: Date.now()
+        });
+
+        transaction.update(counterRef, { currentValue: nextValue });
       });
+
       onClose();
     } catch (error) {
-      console.error("Error al crear:", error);
+      console.error("Error al crear tarea:", error);
     }
   };
 
@@ -57,13 +80,33 @@ const CreateTaskModal = ({ onClose }) => {
 
           <div className="form-row">
             <div className="form-group flex-1">
+              <label>Fecha Inicio</label>
+              <input 
+                type="date" 
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            <div className="form-group flex-1">
+              <label>Fecha Fin</label>
+              <input 
+                type="date" 
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required 
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group flex-1">
               <label>Estado</label>
               <select value={status} onChange={(e) => setStatus(e.target.value)}>
-                <option value="todo">To Do</option>
-                <option value="in-progress">In Progress</option>
-                <option value="paused">On Hold</option>
-                <option value="done">Done</option>
-                <option value="dismissed">Dismissed</option>
+                <option value="todo">Tareas por hacer</option>
+                <option value="in-progress">En curso</option>
+                <option value="paused">En pausa</option>
+                <option value="done">Finalizada</option>
+                <option value="dismissed">Desestimada</option>
               </select>
             </div>
 

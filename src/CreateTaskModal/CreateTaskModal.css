@@ -64,7 +64,6 @@
 
 .btn-close:hover { background-color: rgba(255,255,255,0.05); color: #F87171; }
 
-/* Contenido del Formulario */
 .modal-content form {
   padding: 24px;
   display: flex;
@@ -95,7 +94,7 @@
 
 .modal-content input, 
 .modal-content select {
-  background-color: #161B22;
+  background-color: #1A1D24;
   border: 2px solid #30363D;
   padding: 10px 14px;
   color: white;

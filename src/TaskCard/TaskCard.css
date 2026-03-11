@@ -13,6 +13,7 @@
   border-color: #444C56;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
 }
 
 .task-card.priority-high { border-left: 4px solid #FF8F83; }
@@ -42,6 +43,37 @@
   font-weight: 800;
   padding: 2px 6px;
   border-radius: 2px;
+}
+
+.task-date {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.task-date.normal {
+  color: #8B949E;
+  background: rgba(139, 148, 158, 0.1);
+}
+
+.task-date.warning {
+  color: #FFE7A1; 
+  background: rgba(255, 231, 161, 0.2);
+}
+
+.task-date.danger {
+  color: #FF8F83; 
+  background: rgba(255, 143, 131, 0.2);
+}
+
+.task-date.completed {
+  color: #7EE787; 
+  background: rgba(126, 231, 135, 0.2);
 }
 
 .priority-tag.high { color: #FF8F83; background: rgba(255, 143, 131, 0.1); }

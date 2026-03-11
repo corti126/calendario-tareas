@@ -28,11 +28,21 @@
   padding: 2px 8px;
   border-radius: 10px;
   font-size: 12px;
+  font-weight: 600;
   color: #42526e;
 }
 
 .task-list {
+  min-height: 150px;
   overflow-y: auto;
   flex-grow: 1;
   min-height: 50px;
+}
+
+.task-card * {
+  pointer-events: none;
+}
+
+.task-card {
+  pointer-events: auto;
 }
